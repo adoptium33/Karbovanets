@@ -7,11 +7,12 @@ public class Category {
         this.outgo = outgo;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public boolean isOutgo() {
         return outgo;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

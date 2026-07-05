@@ -1,29 +1,37 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Karbovanets extends JFrame {
     private JPanel panel;
     private JLabel walletLabel;
     private JLabel label1;
+    private JTextArea textArea1;
+    private JButton addTransaction;
 
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
     private int funds;
 
     public Karbovanets() {
+        //Components
         this.categories = new ArrayList<>();
         this.transactions = new ArrayList<>();
-        this.funds = 0;
-        this.initCategories();
-
-        for (Transaction tr : this.transactions) {
-            if (tr.isOutgo()) {
-                this.funds -= tr.getSum();
-            } else {
-                this.funds += tr.getSum();
-            }
-        }
         this.label1.setText(Integer.toString(this.funds));
+        this.addTransaction.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddTransaction addT = new AddTransaction(Karbovanets.this.categories, Karbovanets.this.transactions);
+                Karbovanets.this.updateTransactions();
+            }
+        });
+
+        //methods
+        this.initCategories();
+        this.calculateFunds();
+        this.updateTransactions();
+
 
         this.setContentPane(panel);
 
@@ -31,7 +39,9 @@ public class Karbovanets extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setVisible(true);
+
     }
 
     public void initCategories() {
@@ -51,5 +61,30 @@ public class Karbovanets extends JFrame {
         //income categories
         this.categories.add(new Category("Salary", false));
         this.categories.add(new Category("Gift", false));
+        this.categories.add(new Category("Scholarship", false));
+    }
+
+    public void calculateFunds() {
+        this.funds = 0;
+        for (Transaction tr : this.transactions) {
+            if (tr.getCategory().isOutgo()) {
+                this.funds -= tr.getSum();
+            } else {
+                this.funds += tr.getSum();
+            }
+        }
+    }
+
+    public void updateTransactions() {
+        this.textArea1.setText("");
+        this.textArea1.append("Transactions:");
+        for (Transaction tr : this.transactions) {
+            this.textArea1.append("   " + tr.getCategory());
+            if (tr.getCategory().isOutgo()) {
+                this.textArea1.append("     -" + tr.getSum());
+            } else {
+                this.textArea1.append("     +" + tr.getSum());
+            }
+        }
     }
 }

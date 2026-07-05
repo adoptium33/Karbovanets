@@ -1,17 +1,17 @@
 public class Transaction {
     private int sum;
-    private boolean outgo;
+    private Category category;
 
-    public Transaction(int sum, boolean outgo) {
+    public Transaction(int sum, Category category) {
         this.sum = sum;
-        this.outgo = outgo;
+        this.category = category;
     }
 
     public int getSum() {
         return sum;
     }
 
-    public boolean isOutgo() {
-        return outgo;
+    public Category getCategory() {
+        return category;
     }
 }
