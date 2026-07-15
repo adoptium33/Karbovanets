@@ -1,7 +1,10 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Karbovanets extends JFrame {
     private JPanel panel;
@@ -14,7 +17,7 @@ public class Karbovanets extends JFrame {
     private ArrayList<Transaction> transactions;
     private int funds;
 
-    public Karbovanets() {
+    public Karbovanets() throws FileNotFoundException {
         //Components
         this.categories = new ArrayList<>();
         this.transactions = new ArrayList<>();
@@ -32,7 +35,6 @@ public class Karbovanets extends JFrame {
         this.calculateFunds();
         this.updateTransactions();
 
-
         this.setContentPane(panel);
 
         this.setTitle("Karbovanets Wallet");
@@ -44,24 +46,21 @@ public class Karbovanets extends JFrame {
 
     }
 
-    public void initCategories() {
-        //outgo categories
-        this.categories.add(new Category("Products", true));
-        this.categories.add(new Category("Dwelling", true));
-        this.categories.add(new Category("Transport", true));
-        this.categories.add(new Category("Clothes", true));
-        this.categories.add(new Category("Sport", true));
-        this.categories.add(new Category("Car", true));
-        this.categories.add(new Category("Education", true));
-        this.categories.add(new Category("Free time", true));
-        this.categories.add(new Category("Restaurants", true));
-        this.categories.add(new Category("Health", true));
-        this.categories.add(new Category("Beauty", true));
-        this.categories.add(new Category("Taxes", true));
-        //income categories
-        this.categories.add(new Category("Salary", false));
-        this.categories.add(new Category("Gift", false));
-        this.categories.add(new Category("Scholarship", false));
+    public void initCategories() throws FileNotFoundException {
+        Scanner s = new Scanner(new File("cache/categories"));
+        String outgo = s.next();
+        if (outgo.equals("outgo")) {
+            while (s.hasNext()) {
+                String word = s.nextLine();
+                if (word.equals("income")) {
+                    break;
+                }
+                this.categories.add(new Category(word, true));
+            }
+        }
+        while (s.hasNext()) {
+            this.categories.add(new Category(s.nextLine(), false));
+        }
     }
 
     public void calculateFunds() {
@@ -79,11 +78,11 @@ public class Karbovanets extends JFrame {
         this.textArea1.setText("");
         this.textArea1.append("Transactions:");
         for (Transaction tr : this.transactions) {
-            this.textArea1.append("   " + tr.getCategory());
+            this.textArea1.append("\n   " + tr.getCategory());
             if (tr.getCategory().isOutgo()) {
-                this.textArea1.append("     -" + tr.getSum());
+                this.textArea1.append("\n     -" + tr.getSum());
             } else {
-                this.textArea1.append("     +" + tr.getSum());
+                this.textArea1.append("\n     +" + tr.getSum());
             }
         }
     }
