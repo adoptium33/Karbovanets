@@ -3,6 +3,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 
 public class AddTransaction extends  JFrame {
@@ -17,7 +18,7 @@ public class AddTransaction extends  JFrame {
     private JButton create;
     private JButton cancel;
 
-    public AddTransaction(ArrayList<Category> categories, ArrayList<Transaction> transactions) {
+    public AddTransaction(ArrayList<Category> categories) {
         //Components
         DefaultListModel<Category> outmodel = new DefaultListModel<>();
         DefaultListModel<Category> inmodel = new DefaultListModel<>();
@@ -49,21 +50,24 @@ public class AddTransaction extends  JFrame {
             }
         });
 
-        //TODO fix create transaction logic
         //ActionListeners
         this.create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int int1 = Integer.parseInt(sumField.getText());
+                    BufferedWriter w = new BufferedWriter(new FileWriter("cache/transactions", true));
+
                     if (outgoCategories.isSelectionEmpty()) {
-                        transactions.add(new Transaction(int1, incomeCategories.getSelectedValue()));
+                        w.write(sumField.getText() + " " + incomeCategories.getSelectedValue());
                     } else {
-                        transactions.add(new Transaction(int1, outgoCategories.getSelectedValue()));
+                        w.write(sumField.getText() + " " + outgoCategories.getSelectedValue());
                     }
+                    w.newLine();
+                    w.close();
                     AddTransaction.this.dispose();
-                } catch (NumberFormatException e1) {
+                } catch (IOException e1) {
                     AddTransaction.this.sumField.setText("Please fill with numbers");
+                    throw new RuntimeException();
                 }
             }
         });
