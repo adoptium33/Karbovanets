@@ -103,12 +103,34 @@ public class Karbovanets extends JFrame {
 
     public void updateTransactions() {
         this.textArea1.setText("");
+
+        try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
+            int current = 1;
+            while (current < this.transactionLineCount && s2.hasNextLine()) {
+                s2.nextLine();
+                current++;
+            }
+            while (s2.hasNext()) {
+                int sum = Integer.parseInt(s2.next());
+                String cat = s2.next();
+                for (Category  category : this.categories) {
+                    if (category.toString().equals(cat)) {
+                        this.transactions.add(new Transaction(sum, category));
+                        break;
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            this.textArea1.setText("Problem while reading file, please contact technical support.");
+            throw new RuntimeException(e);
+        }
+
         for (Transaction tr : this.transactions) {
-            this.textArea1.append("\n   " + tr.getCategory());
+            this.textArea1.append("\n" + tr.getCategory());
             if (tr.getCategory().isOutgo()) {
-                this.textArea1.append("\n     -" + tr.getSum());
+                this.textArea1.append("\n        -" + tr.getSum());
             } else {
-                this.textArea1.append("\n     +" + tr.getSum());
+                this.textArea1.append("\n        +" + tr.getSum());
             }
         }
     }

@@ -36,7 +36,9 @@
           </grid>
         </constraints>
         <properties>
+          <disabledTextColor color="-15658473"/>
           <enabled value="false"/>
+          <foreground color="-15658473"/>
         </properties>
       </component>
       <component id="c862e" class="javax.swing.JButton" binding="addTransaction">

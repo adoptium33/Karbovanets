@@ -17,6 +17,9 @@ public class AddTransaction extends  JFrame {
     private JTextField sumField;
     private JButton create;
     private JButton cancel;
+    private JLabel newCategoryLabel;
+    private JTextField newCategoryField;
+    private JButton newCategoryButton;
 
     public AddTransaction(ArrayList<Category> categories) {
         //Components
@@ -75,6 +78,25 @@ public class AddTransaction extends  JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AddTransaction.this.dispose();
+            }
+        });
+        this.newCategoryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    BufferedWriter w = new BufferedWriter(new FileWriter("cache/categories", true));
+
+                    if (AddTransaction.this.newCategoryField.getText().isBlank() && AddTransaction.this.newCategoryField.getText().isEmpty()) {
+                        AddTransaction.this.newCategoryField.setText("Name of new category");
+                    } else {
+                        w.newLine();
+                        w.write(newCategoryField.getText());
+                    }
+                    w.close();
+                } catch (IOException e1) {
+                    AddTransaction.this.newCategoryField.setText("Name of new category");
+                    throw new RuntimeException();
+                }
             }
         });
 
