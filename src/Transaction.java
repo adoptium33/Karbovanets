@@ -1,10 +1,14 @@
+import java.time.LocalDate;
+
 public class Transaction {
     private int sum;
     private Category category;
+    private LocalDate date;
 
-    public Transaction(int sum, Category category) {
+    public Transaction(int sum, Category category, LocalDate date) {
         this.sum = sum;
         this.category = category;
+        this.date = date;
     }
 
     public int getSum() {
@@ -13,5 +17,9 @@ public class Transaction {
 
     public Category getCategory() {
         return category;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 }

@@ -4,6 +4,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class AddTransaction extends  JFrame {
@@ -61,9 +62,9 @@ public class AddTransaction extends  JFrame {
                     BufferedWriter w = new BufferedWriter(new FileWriter("cache/transactions", true));
 
                     if (outgoCategories.isSelectionEmpty()) {
-                        w.write(sumField.getText() + " " + incomeCategories.getSelectedValue());
+                        w.write(sumField.getText() + " " + incomeCategories.getSelectedValue() + " " + LocalDate.now());
                     } else {
-                        w.write(sumField.getText() + " " + outgoCategories.getSelectedValue());
+                        w.write(sumField.getText() + " " + outgoCategories.getSelectedValue() + " " + LocalDate.now());
                     }
                     w.newLine();
                     w.close();

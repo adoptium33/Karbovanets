@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -80,9 +81,10 @@ public class Karbovanets extends JFrame {
         while (s1.hasNext()) {
             int sum = Integer.parseInt(s1.next());
             String cat = s1.next();
+            LocalDate date = LocalDate.parse(s1.next());
             for (Category  category : this.categories) {
                 if (category.toString().equals(cat)) {
-                    this.transactions.add(new Transaction(sum, category));
+                    this.transactions.add(new Transaction(sum, category, date));
                     break;
                 }
             }
@@ -103,7 +105,8 @@ public class Karbovanets extends JFrame {
 
     public void updateTransactions() {
         this.textArea1.setText("");
-
+/*
+        this.transactions.clear();
         try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
             int current = 1;
             while (current < this.transactionLineCount && s2.hasNextLine()) {
@@ -113,9 +116,10 @@ public class Karbovanets extends JFrame {
             while (s2.hasNext()) {
                 int sum = Integer.parseInt(s2.next());
                 String cat = s2.next();
+                LocalDate date = LocalDate.parse(s2.next());
                 for (Category  category : this.categories) {
                     if (category.toString().equals(cat)) {
-                        this.transactions.add(new Transaction(sum, category));
+                        this.transactions.add(new Transaction(sum, category, date));
                         break;
                     }
                 }
@@ -124,13 +128,15 @@ public class Karbovanets extends JFrame {
             this.textArea1.setText("Problem while reading file, please contact technical support.");
             throw new RuntimeException(e);
         }
+ */
 
         for (Transaction tr : this.transactions) {
-            this.textArea1.append("\n" + tr.getCategory());
+            String space = String.format("%20s", "");
+            this.textArea1.append("\n"+ tr.getDate() + "   " + tr.getCategory());
             if (tr.getCategory().isOutgo()) {
-                this.textArea1.append("\n        -" + tr.getSum());
+                this.textArea1.append("\n" + space + "-" + tr.getSum());
             } else {
-                this.textArea1.append("\n        +" + tr.getSum());
+                this.textArea1.append("\n" + space + "+" + tr.getSum());
             }
         }
     }
