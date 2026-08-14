@@ -60,19 +60,16 @@ public class Karbovanets extends JFrame {
     }
 
     public void initCategories() throws FileNotFoundException {
-        Scanner s = new Scanner(new File("cache/categories"));
-        String outgo = s.next();
-        if (outgo.equals("outgo")) {
-            while (s.hasNext()) {
-                String word = s.nextLine();
-                if (word.equals("income")) {
-                    break;
-                }
-                this.categories.add(new Category(word, true));
-            }
-        }
+        Scanner s = new Scanner(new File("cache/categories.outgo"));
         while (s.hasNext()) {
-            this.categories.add(new Category(s.nextLine(), false));
+            String word = s.nextLine();
+            this.categories.add(new Category(word, true));
+        }
+
+        Scanner s1 = new Scanner(new File("cache/categories.income"));
+        while (s1.hasNext()) {
+            String word = s1.nextLine();
+            this.categories.add(new Category(word, false));
         }
     }
 
@@ -117,7 +114,7 @@ public class Karbovanets extends JFrame {
                 int sum = Integer.parseInt(s2.next());
                 String cat = s2.next();
                 LocalDate date = LocalDate.parse(s2.next());
-                for (Category  category : this.categories) {
+                for (Category  category : this.categories.outgo) {
                     if (category.toString().equals(cat)) {
                         this.transactions.add(new Transaction(sum, category, date));
                         break;

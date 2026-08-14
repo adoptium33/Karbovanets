@@ -21,6 +21,7 @@ public class AddTransaction extends  JFrame {
     private JLabel newCategoryLabel;
     private JTextField newCategoryField;
     private JButton newCategoryButton;
+    private JComboBox categoriesType;
 
     public AddTransaction(ArrayList<Category> categories) {
         //Components
@@ -35,6 +36,9 @@ public class AddTransaction extends  JFrame {
         }
         this.outgoCategories.setModel(outmodel);
         this.incomeCategories.setModel(inmodel);
+
+        this.categoriesType.addItem("outgo");
+        this.categoriesType.addItem("income");
 
         //ListSelectionListeners
         this.outgoCategories.addListSelectionListener(new ListSelectionListener() {
@@ -85,13 +89,21 @@ public class AddTransaction extends  JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    BufferedWriter w = new BufferedWriter(new FileWriter("cache/categories", true));
+                    BufferedWriter w = new BufferedWriter(new FileWriter("cache/categories.outgo", true));
 
                     if (AddTransaction.this.newCategoryField.getText().isBlank() && AddTransaction.this.newCategoryField.getText().isEmpty()) {
                         AddTransaction.this.newCategoryField.setText("Name of new category");
                     } else {
-                        w.newLine();
-                        w.write(newCategoryField.getText());
+                        String selectedType = (String) AddTransaction.this.categoriesType.getSelectedItem();
+                        if (selectedType.equals("outgo")) {
+                            w.newLine();
+                            w.write(newCategoryField.getText());
+                        } else {
+                            w = new BufferedWriter(new FileWriter("cache/categories.income", true));
+                            w.newLine();
+                            w.write(newCategoryField.getText());
+                        }
+
                     }
                     w.close();
                 } catch (IOException e1) {
