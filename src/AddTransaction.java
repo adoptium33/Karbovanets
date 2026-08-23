@@ -23,19 +23,22 @@ public class AddTransaction extends  JFrame {
     private JButton newCategoryButton;
     private JComboBox categoriesType;
 
+    private DefaultListModel<Category> outmodel;
+    private DefaultListModel<Category> inmodel;
+
     public AddTransaction(ArrayList<Category> categories) {
         //Components
-        DefaultListModel<Category> outmodel = new DefaultListModel<>();
-        DefaultListModel<Category> inmodel = new DefaultListModel<>();
+        this.outmodel = new DefaultListModel<>();
+        this.inmodel = new DefaultListModel<>();
         for (Category c : categories) {
             if (c.isOutgo()) {
-                outmodel.addElement(c);
+                this.outmodel.addElement(c);
             } else {
-                inmodel.addElement(c);
+                this.inmodel.addElement(c);
             }
         }
-        this.outgoCategories.setModel(outmodel);
-        this.incomeCategories.setModel(inmodel);
+        this.outgoCategories.setModel(this.outmodel);
+        this.incomeCategories.setModel(this.inmodel);
 
         this.categoriesType.addItem("outgo");
         this.categoriesType.addItem("income");
@@ -64,13 +67,15 @@ public class AddTransaction extends  JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     BufferedWriter w = new BufferedWriter(new FileWriter("cache/transactions", true));
-
+                    File file = new File("cache/transactions");
+                    if (file.length() != 0) {
+                        w.newLine();
+                    }
                     if (outgoCategories.isSelectionEmpty()) {
                         w.write(sumField.getText() + " " + incomeCategories.getSelectedValue() + " " + LocalDate.now());
                     } else {
                         w.write(sumField.getText() + " " + outgoCategories.getSelectedValue() + " " + LocalDate.now());
                     }
-                    w.newLine();
                     w.close();
                     AddTransaction.this.dispose();
                 } catch (IOException e1) {
@@ -98,10 +103,12 @@ public class AddTransaction extends  JFrame {
                         if (selectedType.equals("outgo")) {
                             w.newLine();
                             w.write(newCategoryField.getText());
+                            AddTransaction.this.outmodel.addElement(new Category(newCategoryField.getText(), true));
                         } else {
                             w = new BufferedWriter(new FileWriter("cache/categories.income", true));
                             w.newLine();
                             w.write(newCategoryField.getText());
+                            AddTransaction.this.inmodel.addElement(new Category(newCategoryField.getText(), false));
                         }
 
                     }

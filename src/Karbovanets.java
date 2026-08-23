@@ -102,11 +102,11 @@ public class Karbovanets extends JFrame {
 
     public void updateTransactions() {
         this.textArea1.setText("");
-/*
-        this.transactions.clear();
+
+
         try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
             int current = 1;
-            while (current < this.transactionLineCount && s2.hasNextLine()) {
+            while (current <= this.transactionLineCount && s2.hasNextLine()) {
                 s2.nextLine();
                 current++;
             }
@@ -114,7 +114,7 @@ public class Karbovanets extends JFrame {
                 int sum = Integer.parseInt(s2.next());
                 String cat = s2.next();
                 LocalDate date = LocalDate.parse(s2.next());
-                for (Category  category : this.categories.outgo) {
+                for (Category  category : this.categories) {
                     if (category.toString().equals(cat)) {
                         this.transactions.add(new Transaction(sum, category, date));
                         break;
@@ -125,7 +125,7 @@ public class Karbovanets extends JFrame {
             this.textArea1.setText("Problem while reading file, please contact technical support.");
             throw new RuntimeException(e);
         }
- */
+
 
         for (Transaction tr : this.transactions) {
             String space = String.format("%20s", "");
