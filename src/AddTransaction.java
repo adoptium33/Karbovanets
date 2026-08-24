@@ -26,7 +26,7 @@ public class AddTransaction extends  JFrame {
     private DefaultListModel<Category> outmodel;
     private DefaultListModel<Category> inmodel;
 
-    public AddTransaction(ArrayList<Category> categories) {
+    public AddTransaction(ArrayList<Category> categories, Karbovanets karbovanets) {
         //Components
         this.outmodel = new DefaultListModel<>();
         this.inmodel = new DefaultListModel<>();
@@ -77,6 +77,7 @@ public class AddTransaction extends  JFrame {
                         w.write(sumField.getText() + " " + outgoCategories.getSelectedValue() + " " + LocalDate.now());
                     }
                     w.close();
+                    karbovanets.updateTransactions();
                     AddTransaction.this.dispose();
                 } catch (IOException e1) {
                     AddTransaction.this.sumField.setText("Please fill with numbers");

@@ -31,7 +31,7 @@ public class Karbovanets extends JFrame {
         this.addTransaction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddTransaction addT = new AddTransaction(Karbovanets.this.categories);
+                AddTransaction addT = new AddTransaction(Karbovanets.this.categories, Karbovanets.this);
             }
         });
 
@@ -54,7 +54,6 @@ public class Karbovanets extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
-        this.setResizable(false);
         this.setVisible(true);
 
     }
@@ -101,9 +100,6 @@ public class Karbovanets extends JFrame {
     }
 
     public void updateTransactions() {
-        this.textArea1.setText("");
-
-
         try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
             int current = 1;
             while (current <= this.transactionLineCount && s2.hasNextLine()) {
@@ -126,7 +122,7 @@ public class Karbovanets extends JFrame {
             throw new RuntimeException(e);
         }
 
-
+        this.textArea1.setText("");
         for (Transaction tr : this.transactions) {
             String space = String.format("%20s", "");
             this.textArea1.append("\n"+ tr.getDate() + "   " + tr.getCategory());
@@ -135,6 +131,12 @@ public class Karbovanets extends JFrame {
             } else {
                 this.textArea1.append("\n" + space + "+" + tr.getSum());
             }
+        }
+
+        try (java.util.stream.Stream<String> lines = Files.lines(Path.of("cache/transactions"))) {
+            this.transactionLineCount = lines.count();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
