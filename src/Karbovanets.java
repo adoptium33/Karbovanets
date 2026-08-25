@@ -17,6 +17,22 @@ public class Karbovanets extends JFrame {
     private JTextArea textArea1;
     private JButton addTransaction;
     private JLabel transactionsLabel;
+    private JLabel timeLimitsLabel;
+    private JLabel fromDateLabel;
+    private JLabel tillDateLabel;
+    private JLabel fromYearLabel;
+    private JTextField fromYearField;
+    private JTextField fromMonthField;
+    private JTextField fromDayField;
+    private JLabel fromMonthLabel;
+    private JLabel fromDayLabel;
+    private JTextField tillYearField;
+    private JTextField tillMonthField;
+    private JTextField tillDayField;
+    private JLabel tillYearLabel;
+    private JLabel tillMonthLabel;
+    private JLabel tillDayLabel;
+    private JButton updateTrasactionsList;
 
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
@@ -25,8 +41,6 @@ public class Karbovanets extends JFrame {
 
     public Karbovanets() throws FileNotFoundException {
         //Components
-        this.categories = new ArrayList<>();
-        this.transactions = new ArrayList<>();
         this.label1.setText(Integer.toString(this.funds));
         this.addTransaction.addActionListener(new ActionListener() {
             @Override
@@ -34,8 +48,31 @@ public class Karbovanets extends JFrame {
                 AddTransaction addT = new AddTransaction(Karbovanets.this.categories, Karbovanets.this);
             }
         });
+        this.updateTrasactionsList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Karbovanets.this.updateTransactions();
+            }
+        });
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
+        this.tillYearField.setText(Integer.toString(year));
+        this.tillMonthField.setText(Integer.toString(month));
+        this.tillDayField.setText(Integer.toString(day));
+
+        LocalDate monthAgo = today.minusMonths(1);
+        int yearFrom = monthAgo.getYear();
+        int monthFrom = monthAgo.getMonthValue();
+        int dayFrom = monthAgo.getDayOfMonth();
+        this.fromYearField.setText(Integer.toString(yearFrom));
+        this.fromMonthField.setText(Integer.toString(monthFrom));
+        this.fromDayField.setText(Integer.toString(dayFrom));
 
         //attributes
+        this.categories = new ArrayList<>();
+        this.transactions = new ArrayList<>();
         try (java.util.stream.Stream<String> lines = Files.lines(Path.of("cache/transactions"))) {
             this.transactionLineCount = lines.count();
         } catch (IOException e) {
@@ -123,13 +160,21 @@ public class Karbovanets extends JFrame {
         }
 
         this.textArea1.setText("");
+        LocalDate upperBorder = LocalDate.of(Integer.parseInt(Karbovanets.this.tillYearField.getText()),
+                                       Integer.parseInt(Karbovanets.this.tillMonthField.getText()),
+                                       Integer.parseInt(Karbovanets.this.tillDayField.getText()));
+        LocalDate lowerBorder = LocalDate.of(Integer.parseInt(Karbovanets.this.fromYearField.getText()),
+                                             Integer.parseInt(Karbovanets.this.fromMonthField.getText()),
+                                             Integer.parseInt(Karbovanets.this.fromDayField.getText()));
         for (Transaction tr : this.transactions) {
-            String space = String.format("%20s", "");
-            this.textArea1.append("\n"+ tr.getDate() + "   " + tr.getCategory());
-            if (tr.getCategory().isOutgo()) {
-                this.textArea1.append("\n" + space + "-" + tr.getSum());
-            } else {
-                this.textArea1.append("\n" + space + "+" + tr.getSum());
+            if (tr.getDate().isAfter(lowerBorder.minusDays(1)) && tr.getDate().isBefore(upperBorder.plusDays(1))) {
+                String space = String.format("%20s", "");
+                this.textArea1.append("\n" + tr.getDate() + "   " + tr.getCategory());
+                if (tr.getCategory().isOutgo()) {
+                    this.textArea1.append("\n" + space + "-" + tr.getSum());
+                } else {
+                    this.textArea1.append("\n" + space + "+" + tr.getSum());
+                }
             }
         }
 
@@ -138,5 +183,7 @@ public class Karbovanets extends JFrame {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.calculateFunds();
     }
 }
