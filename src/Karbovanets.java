@@ -101,26 +101,46 @@ public class Karbovanets extends JFrame {
             String word = s.nextLine();
             this.categories.add(new Category(word, true));
         }
+        s.close();
 
         Scanner s1 = new Scanner(new File("cache/categories.income"));
         while (s1.hasNext()) {
             String word = s1.nextLine();
             this.categories.add(new Category(word, false));
         }
+        s1.close();
     }
 
     public void initTransactions() throws FileNotFoundException {
-        Scanner s1 = new Scanner(new File("cache/transactions"));
-        while (s1.hasNext()) {
-            int sum = Integer.parseInt(s1.next());
-            String cat = s1.next();
-            LocalDate date = LocalDate.parse(s1.next());
-            for (Category  category : this.categories) {
-                if (category.toString().equals(cat)) {
-                    this.transactions.add(new Transaction(sum, category, date));
-                    break;
+        try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
+            while (s2.hasNext()) {
+                String[] line = s2.nextLine().trim().split("\\s+");
+                int sum = Integer.parseInt(line[0]);
+                StringBuilder catB = new StringBuilder();
+                for (int i = 1; i < line.length - 1; i++) {
+                    catB.append(line[i]);
+                    if (line.length > 3 && i != line.length - 2) {
+                        catB.append(" ");
+                    }
+                }
+                String cat = catB.toString();
+                LocalDate date = LocalDate.parse(line[line.length - 1]);
+                for (Category  category : this.categories) {
+                    if (category.toString().equals(cat)) {
+                        this.transactions.add(new Transaction(sum, category, date));
+                        break;
+                    }
                 }
             }
+        } catch (FileNotFoundException e) {
+            this.textArea1.setText("Problem while reading file, please contact technical support.");
+            throw new RuntimeException(e);
+        }
+
+        try (java.util.stream.Stream<String> lines = Files.lines(Path.of("cache/transactions"))) {
+            this.transactionLineCount = lines.count();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -144,9 +164,17 @@ public class Karbovanets extends JFrame {
                 current++;
             }
             while (s2.hasNext()) {
-                int sum = Integer.parseInt(s2.next());
-                String cat = s2.next();
-                LocalDate date = LocalDate.parse(s2.next());
+                String[] line = s2.nextLine().trim().split("\\s+");
+                int sum = Integer.parseInt(line[0]);
+                StringBuilder catB = new StringBuilder();
+                for (int i = 1; i < line.length - 1; i++) {
+                    catB.append(line[i]);
+                    if (line.length > 3 && i != line.length - 2) {
+                        catB.append(" ");
+                    }
+                }
+                String cat = catB.toString();
+                LocalDate date = LocalDate.parse(line[line.length - 1]);
                 for (Category  category : this.categories) {
                     if (category.toString().equals(cat)) {
                         this.transactions.add(new Transaction(sum, category, date));
