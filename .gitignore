@@ -28,3 +28,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Maven ###
+/.idea/
+target/
+Karbovanets.iml
