@@ -11,13 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.Scanner;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
-import org.knowm.xchart.XChartPanel;
 
 public class Karbovanets extends JFrame {
     private JPanel panel;
@@ -42,7 +40,8 @@ public class Karbovanets extends JFrame {
     private JLabel tillMonthLabel;
     private JLabel tillDayLabel;
     private JButton updateTrasactionsList;
-    private JLabel placeForChart;
+    private JLabel placeForIncomeChart;
+    private JLabel placeForOutogoChart;
 
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
@@ -123,17 +122,34 @@ public class Karbovanets extends JFrame {
         s1.close();
     }
 
-    public void createPieChart() {
-        PieChart chart = new PieChartBuilder().width(600).height(400).title("Chart").build();
+    public void createPieChartIncome() {
+        PieChart chart = new PieChartBuilder().width(500).height(400).title("Income").build();
         Map<Category, Integer> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingInt(Transaction::getSum)));
         for (Map.Entry<Category, Integer> entry : groupedTransactions.entrySet()) {
-            chart.addSeries(entry.getKey().toString(), entry.getValue());
+            if (!entry.getKey().isOutgo()) {
+                chart.addSeries(entry.getKey().toString(), entry.getValue());
+            }
         }
 
         BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);
-        this.placeForChart.setIcon(new ImageIcon(chartImage));
-        this.placeForChart.revalidate();
-        this.placeForChart.repaint();
+        this.placeForIncomeChart.setIcon(new ImageIcon(chartImage));
+        this.placeForIncomeChart.revalidate();
+        this.placeForIncomeChart.repaint();
+    }
+
+    public void createPieChartOutgo() {
+        PieChart chart = new PieChartBuilder().width(500).height(400).title("Outgo").build();
+        Map<Category, Integer> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingInt(Transaction::getSum)));
+        for (Map.Entry<Category, Integer> entry : groupedTransactions.entrySet()) {
+            if (entry.getKey().isOutgo()) {
+                chart.addSeries(entry.getKey().toString(), entry.getValue());
+            }
+        }
+
+        BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);
+        this.placeForOutogoChart.setIcon(new ImageIcon(chartImage));
+        this.placeForOutogoChart.revalidate();
+        this.placeForOutogoChart.repaint();
     }
 
     public void initTransactions() {
@@ -240,6 +256,7 @@ public class Karbovanets extends JFrame {
         }
 
         this.calculateFunds();
-        this.createPieChart();
+        this.createPieChartIncome();
+        this.createPieChartOutgo();
     }
 }
