@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,7 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.Scanner;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.PieChart;
+import org.knowm.xchart.PieChartBuilder;
+import org.knowm.xchart.XChartPanel;
 
 public class Karbovanets extends JFrame {
     private JPanel panel;
@@ -33,9 +42,11 @@ public class Karbovanets extends JFrame {
     private JLabel tillMonthLabel;
     private JLabel tillDayLabel;
     private JButton updateTrasactionsList;
+    private JLabel placeForChart;
 
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
+    private List<Transaction> transactionsForCart;
     private int funds;
     private long transactionLineCount;
 
@@ -73,6 +84,7 @@ public class Karbovanets extends JFrame {
         //attributes
         this.categories = new ArrayList<>();
         this.transactions = new ArrayList<>();
+        this.transactionsForCart = new ArrayList<>();
         try (java.util.stream.Stream<String> lines = Files.lines(Path.of("cache/transactions"))) {
             this.transactionLineCount = lines.count();
         } catch (IOException e) {
@@ -111,7 +123,20 @@ public class Karbovanets extends JFrame {
         s1.close();
     }
 
-    public void initTransactions() throws FileNotFoundException {
+    public void createPieChart() {
+        PieChart chart = new PieChartBuilder().width(600).height(400).title("Chart").build();
+        Map<Category, Integer> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingInt(Transaction::getSum)));
+        for (Map.Entry<Category, Integer> entry : groupedTransactions.entrySet()) {
+            chart.addSeries(entry.getKey().toString(), entry.getValue());
+        }
+
+        BufferedImage chartImage = BitmapEncoder.getBufferedImage(chart);
+        this.placeForChart.setIcon(new ImageIcon(chartImage));
+        this.placeForChart.revalidate();
+        this.placeForChart.repaint();
+    }
+
+    public void initTransactions() {
         try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
             while (s2.hasNext()) {
                 String[] line = s2.nextLine().trim().split("\\s+");
@@ -188,6 +213,7 @@ public class Karbovanets extends JFrame {
         }
 
         this.textArea1.setText("");
+        this.transactionsForCart.clear();
         LocalDate upperBorder = LocalDate.of(Integer.parseInt(Karbovanets.this.tillYearField.getText()),
                                        Integer.parseInt(Karbovanets.this.tillMonthField.getText()),
                                        Integer.parseInt(Karbovanets.this.tillDayField.getText()));
@@ -203,6 +229,7 @@ public class Karbovanets extends JFrame {
                 } else {
                     this.textArea1.append("\n" + space + "+" + tr.getSum());
                 }
+                this.transactionsForCart.add(tr);
             }
         }
 
@@ -213,5 +240,6 @@ public class Karbovanets extends JFrame {
         }
 
         this.calculateFunds();
+        this.createPieChart();
     }
 }
