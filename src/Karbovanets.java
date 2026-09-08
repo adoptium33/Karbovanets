@@ -46,12 +46,12 @@ public class Karbovanets extends JFrame {
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
     private List<Transaction> transactionsForCart;
-    private int funds;
+    private double funds;
     private long transactionLineCount;
 
     public Karbovanets() throws FileNotFoundException {
         //Components
-        this.label1.setText(Integer.toString(this.funds));
+        this.label1.setText(Double.toString(this.funds));
         this.addTransaction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,8 +124,8 @@ public class Karbovanets extends JFrame {
 
     public void createPieChartIncome() {
         PieChart chart = new PieChartBuilder().width(500).height(400).title("Income").build();
-        Map<Category, Integer> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingInt(Transaction::getSum)));
-        for (Map.Entry<Category, Integer> entry : groupedTransactions.entrySet()) {
+        Map<Category, Double> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingDouble(Transaction::getSum)));
+        for (Map.Entry<Category, Double> entry : groupedTransactions.entrySet()) {
             if (!entry.getKey().isOutgo()) {
                 chart.addSeries(entry.getKey().toString(), entry.getValue());
             }
@@ -139,8 +139,8 @@ public class Karbovanets extends JFrame {
 
     public void createPieChartOutgo() {
         PieChart chart = new PieChartBuilder().width(500).height(400).title("Outgo").build();
-        Map<Category, Integer> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingInt(Transaction::getSum)));
-        for (Map.Entry<Category, Integer> entry : groupedTransactions.entrySet()) {
+        Map<Category, Double> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingDouble(Transaction::getSum)));
+        for (Map.Entry<Category, Double> entry : groupedTransactions.entrySet()) {
             if (entry.getKey().isOutgo()) {
                 chart.addSeries(entry.getKey().toString(), entry.getValue());
             }
@@ -156,7 +156,7 @@ public class Karbovanets extends JFrame {
         try (Scanner s2 = new Scanner(new File("cache/transactions"))) {
             while (s2.hasNext()) {
                 String[] line = s2.nextLine().trim().split("\\s+");
-                int sum = Integer.parseInt(line[0]);
+                double sum = Double.parseDouble(line[0]);
                 StringBuilder catB = new StringBuilder();
                 for (int i = 1; i < line.length - 1; i++) {
                     catB.append(line[i]);
@@ -194,7 +194,7 @@ public class Karbovanets extends JFrame {
                 this.funds += tr.getSum();
             }
         }
-        this.label1.setText(Integer.toString(this.funds));
+        this.label1.setText(Double.toString(this.funds));
     }
 
     public void updateTransactions() {
@@ -206,7 +206,7 @@ public class Karbovanets extends JFrame {
             }
             while (s2.hasNext()) {
                 String[] line = s2.nextLine().trim().split("\\s+");
-                int sum = Integer.parseInt(line[0]);
+                double sum = Double.parseDouble(line[0]);
                 StringBuilder catB = new StringBuilder();
                 for (int i = 1; i < line.length - 1; i++) {
                     catB.append(line[i]);

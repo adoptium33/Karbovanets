@@ -1,17 +1,17 @@
 import java.time.LocalDate;
 
 public class Transaction {
-    private int sum;
+    private double sum;
     private Category category;
     private LocalDate date;
 
-    public Transaction(int sum, Category category, LocalDate date) {
+    public Transaction(double sum, Category category, LocalDate date) {
         this.sum = sum;
         this.category = category;
         this.date = date;
     }
 
-    public int getSum() {
+    public double getSum() {
         return sum;
     }
 
