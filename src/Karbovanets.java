@@ -48,6 +48,7 @@ public class Karbovanets extends JFrame {
     private List<Transaction> transactionsForCart;
     private double funds;
     private long transactionLineCount;
+    private AddTransaction addT;
 
     public Karbovanets() throws FileNotFoundException {
         //Components
@@ -55,7 +56,9 @@ public class Karbovanets extends JFrame {
         this.addTransaction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddTransaction addT = new AddTransaction(Karbovanets.this.categories, Karbovanets.this);
+                if (addT == null || !addT.isDisplayable()) {
+                    Karbovanets.this.addT = new AddTransaction(Karbovanets.this.categories, Karbovanets.this);
+                }
             }
         });
         this.updateTrasactionsList.addActionListener(new ActionListener() {
@@ -258,5 +261,6 @@ public class Karbovanets extends JFrame {
         this.calculateFunds();
         this.createPieChartIncome();
         this.createPieChartOutgo();
+        this.addT = null;
     }
 }

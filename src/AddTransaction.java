@@ -66,22 +66,26 @@ public class AddTransaction extends  JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    BufferedWriter w = new BufferedWriter(new FileWriter("cache/transactions", true));
-                    File file = new File("cache/transactions");
-                    if (file.length() != 0) {
-                        w.newLine();
+                    Double.parseDouble(sumField.getText());
+                    try {
+                        BufferedWriter w = new BufferedWriter(new FileWriter("cache/transactions", true));
+                        File file = new File("cache/transactions");
+                        if (file.length() != 0) {
+                            w.newLine();
+                        }
+                        if (outgoCategories.isSelectionEmpty()) {
+                            w.write(sumField.getText() + " " + incomeCategories.getSelectedValue() + " " + LocalDate.now());
+                        } else {
+                            w.write(sumField.getText() + " " + outgoCategories.getSelectedValue() + " " + LocalDate.now());
+                        }
+                        w.close();
+                        karbovanets.updateTransactions();
+                        AddTransaction.this.dispose();
+                    } catch (IOException e1) {
+                        throw new RuntimeException();
                     }
-                    if (outgoCategories.isSelectionEmpty()) {
-                        w.write(sumField.getText() + " " + incomeCategories.getSelectedValue() + " " + LocalDate.now());
-                    } else {
-                        w.write(sumField.getText() + " " + outgoCategories.getSelectedValue() + " " + LocalDate.now());
-                    }
-                    w.close();
-                    karbovanets.updateTransactions();
-                    AddTransaction.this.dispose();
-                } catch (IOException e1) {
-                    AddTransaction.this.sumField.setText("Please fill with numbers");
-                    throw new RuntimeException();
+                } catch (NumberFormatException e2) {
+                    sumField.setText("Write only decimal number");
                 }
             }
         });
@@ -89,6 +93,7 @@ public class AddTransaction extends  JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 AddTransaction.this.dispose();
+                karbovanets.updateTransactions();
             }
         });
         this.newCategoryButton.addActionListener(new ActionListener() {
