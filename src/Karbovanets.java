@@ -39,9 +39,9 @@ public class Karbovanets extends JFrame {
     private JLabel tillYearLabel;
     private JLabel tillMonthLabel;
     private JLabel tillDayLabel;
-    private JButton updateTrasactionsList;
     private JLabel placeForIncomeChart;
     private JLabel placeForOutogoChart;
+    private JLabel chartsLabel;
 
     private ArrayList<Category> categories;
     private ArrayList<Transaction> transactions;
@@ -61,12 +61,6 @@ public class Karbovanets extends JFrame {
                 }
             }
         });
-        this.updateTrasactionsList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Karbovanets.this.updateTransactions();
-            }
-        });
         LocalDate today = LocalDate.now();
         int year = today.getYear();
         int month = today.getMonthValue();
@@ -82,6 +76,10 @@ public class Karbovanets extends JFrame {
         this.fromYearField.setText(Integer.toString(yearFrom));
         this.fromMonthField.setText(Integer.toString(monthFrom));
         this.fromDayField.setText(Integer.toString(dayFrom));
+
+        this.addTransaction.setContentAreaFilled(false);
+        this.addTransaction.setOpaque(true);
+        this.addTransaction.setFocusPainted(false);
 
         //attributes
         this.categories = new ArrayList<>();
@@ -126,7 +124,7 @@ public class Karbovanets extends JFrame {
     }
 
     public void createPieChartIncome() {
-        PieChart chart = new PieChartBuilder().width(500).height(400).title("Income").build();
+        PieChart chart = new PieChartBuilder().width(550).height(400).title("Income").build();
         Map<Category, Double> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingDouble(Transaction::getSum)));
         for (Map.Entry<Category, Double> entry : groupedTransactions.entrySet()) {
             if (!entry.getKey().isOutgo()) {
@@ -141,7 +139,7 @@ public class Karbovanets extends JFrame {
     }
 
     public void createPieChartOutgo() {
-        PieChart chart = new PieChartBuilder().width(500).height(400).title("Outgo").build();
+        PieChart chart = new PieChartBuilder().width(550).height(400).title("Outgo").build();
         Map<Category, Double> groupedTransactions = this.transactionsForCart.stream().collect(Collectors.groupingBy(Transaction::getCategory, Collectors.summingDouble(Transaction::getSum)));
         for (Map.Entry<Category, Double> entry : groupedTransactions.entrySet()) {
             if (entry.getKey().isOutgo()) {

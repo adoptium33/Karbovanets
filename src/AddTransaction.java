@@ -43,6 +43,16 @@ public class AddTransaction extends  JFrame {
         this.categoriesType.addItem("outgo");
         this.categoriesType.addItem("income");
 
+        this.create.setContentAreaFilled(false);
+        this.create.setOpaque(true);
+        this.create.setFocusPainted(false);
+        this.cancel.setContentAreaFilled(false);
+        this.cancel.setOpaque(true);
+        this.cancel.setFocusPainted(false);
+        this.newCategoryButton.setContentAreaFilled(false);
+        this.newCategoryButton.setOpaque(true);
+        this.newCategoryButton.setFocusPainted(false);
+
         //ListSelectionListeners
         this.outgoCategories.addListSelectionListener(new ListSelectionListener() {
             @Override
