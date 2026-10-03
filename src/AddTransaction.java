@@ -118,7 +118,7 @@ public class AddTransaction extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    BufferedWriter w = new BufferedWriter(new FileWriter(Path.of(System.getProperty("user.dir"), "cache", "transactions").toFile(), true));
+                    BufferedWriter w = new BufferedWriter(new FileWriter(Path.of(System.getProperty("user.dir"), "cache", "categories.outgo").toFile(), true));
 
                     if (AddTransaction.this.newCategoryField.getText().isBlank() && AddTransaction.this.newCategoryField.getText().isEmpty()) {
                         AddTransaction.this.newCategoryField.setText("Name of new category");
@@ -129,7 +129,7 @@ public class AddTransaction extends JFrame {
                             w.write(newCategoryField.getText());
                             AddTransaction.this.outmodel.addElement(new Category(newCategoryField.getText(), true));
                         } else {
-                            w = new BufferedWriter(new FileWriter(Path.of(System.getProperty("user.dir"), "cache", "transactions").toFile(), true));
+                            w = new BufferedWriter(new FileWriter(Path.of(System.getProperty("user.dir"), "cache", "categories.income").toFile(), true));
                             w.newLine();
                             w.write(newCategoryField.getText());
                             AddTransaction.this.inmodel.addElement(new Category(newCategoryField.getText(), false));
