@@ -20,6 +20,22 @@ Here is another program's window, which opens by clicking button "Add Transactio
 ## Tech Stack
 Java 25, Swing, Maven, [XChart](https://github.com/knowm/XChart)
 
+## Getting Started
+1. Install [JDK 25](https://www.oracle.com/java/technologies/downloads/#java25) or newer.
+2. Download the latest `.jar` file from the [Releases](../../releases) page.
+3. Double-click the file, or run it from a terminal:
+```bash
+java -jar karbovanets-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+## Your Data
+On the first launch the app creates a `cache/` folder next to the `.jar` file
+and stores your transactions and categories there.
+
+- DO NOT delete this folder, or you will lose your data
+- If you move the `.jar` to another location, move the `cache/` folder with it
+- To reset the app to its initial state, delete the `cache/` folder
+
 ## Project Structure
 - `Karbovanets.java` - main window, data loading, charts
 - `AddTransaction.java` - window for adding new transactions
