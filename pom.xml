@@ -43,6 +43,14 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>cache</directory>
+                <targetPath>cache</targetPath>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -52,7 +60,7 @@
                     <archive>
                         <manifest>
                             <mainClass>Main</mainClass>
-                         </manifest>
+                        </manifest>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -65,29 +73,6 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-my-folder</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/cache</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/cache</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

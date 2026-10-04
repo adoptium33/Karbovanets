@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -55,6 +56,7 @@ public class Karbovanets extends JFrame {
     private AddTransaction addT;
 
     public Karbovanets() throws FileNotFoundException {
+        this.initCache();
         //Components
         this.label1.setText(Double.toString(this.funds));
         this.addTransaction.addActionListener(new ActionListener() {
@@ -125,6 +127,27 @@ public class Karbovanets extends JFrame {
             this.categories.add(new Category(word, false));
         }
         s1.close();
+    }
+
+    private void initCache() {
+        Path dir = Path.of(System.getProperty("user.dir"), "cache");
+        try {
+            Files.createDirectories(dir);
+            for (String name : new String[]{"transactions", "categories.outgo", "categories.income"}) {
+                Path target = dir.resolve(name);
+                if (Files.notExists(target)) {
+                    try (InputStream in = Karbovanets.class.getResourceAsStream("/cache/" + name)) {
+                        if (in != null) {
+                            Files.copy(in, target);
+                        } else {
+                            Files.createFile(target);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void createPieChartIncome() {
